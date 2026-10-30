@@ -155,6 +155,57 @@ Para probar el modo manejo sin manejar (solo en la versión de desarrollo):
 adb shell am broadcast -a com.autosense.launcher.DEBUG_SPEED --ei kmh 80
 ```
 
+## Personalízalo con tu propio carro
+
+El launcher está hecho para un Hyundai Accent rojo, pero se puede adaptar a cualquier carro y marca.
+Por ahora se hace cambiando unos archivos y volviendo a instalar la app.
+
+### 1. Render de tu carro
+
+1. Descarga un modelo 3D de tu carro en formato `.glb` (por ejemplo, de [Sketchfab](https://sketchfab.com/)).
+   Revisa su licencia y da el crédito que pida.
+2. En `tools/render/`:
+   - Copia el modelo a `models/`.
+   - Descarga [three.js](https://github.com/mrdoob/three.js) en `vendor/` (`three.module.js`, `loaders/GLTFLoader.js`, `environments/RoomEnvironment.js`).
+   - Inicia el servidor con `node server.js` (sirve en `http://localhost:8765`).
+3. Abre en el navegador los cuadros del giro 360° (cambia `tu-carro.glb` y el color `paint` a tu gusto):
+
+   ```
+   http://localhost:8765/render.html?model=tu-carro.glb&frames=36&start=225&w=1400&h=760&outw=720&paint=b8121c&paintMatch=^body$
+   ```
+
+   Cuando el título de la página diga `DONE`, los cuadros están en `tools/frames/`. Cópialos a
+   `AutoSense/app/src/main/assets/car360/`.
+   - `paint` es el color en hexadecimal.
+   - `paintMatch` es el nombre del material de la carrocería en tu modelo.
+   - La consola del navegador muestra el recuadro usado (`CROP x0,y0,x1,y1`). Anótalo para el paso siguiente.
+4. Para las llantas girando del modo manejo, usa el mismo recuadro con `crop=`. Copia los cuadros a `assets/car_drive/`:
+
+   ```
+   http://localhost:8765/render.html?model=tu-carro.glb&frames=24&spin=1&spinStep=360&start=325&w=1400&h=760&outw=720&paint=b8121c&paintMatch=^body$&crop=x0,y0,x1,y1
+   ```
+
+   Las llantas se detectan por el nombre de sus piezas en el modelo (`Circle.001`, `Circle.002`…).
+   Si tu modelo las nombra distinto, ajusta la búsqueda `wheels` en `render.html`.
+5. Si cambias el ángulo de manejo (`start=325`), actualiza `FORWARD_FRAME` en `CarTurntableView.kt`
+   y la perspectiva de la carretera (`FRAME_PTS`) en `RoadView.kt`.
+
+### 2. Marca, nombre de la app y propietario
+
+| Qué | Dónde |
+|---|---|
+| Logo de la marca | `AutoSense/app/src/main/res/drawable/ic_hyundai_logo.xml` (vector; reemplázalo por el de tu marca) |
+| Nombre de la app ("Hyundai") | `android:label` en `AndroidManifest.xml` y los textos en `res/values/strings.xml` |
+| Nombre del saludo ("Hola Alfre") | `USER_NAME` en `Dashboard.kt` |
+| Descripción del auto | `contentDescription` del auto en `CarTurntableView.kt` y los layouts |
+| Crédito del modelo 3D | Texto en `AppsActivity.kt` |
+
+### Próximamente
+
+Una próxima versión del launcher traerá su **propia pantalla de configuración**. Desde la tablet, sin
+recompilar, se podrá cambiar la marca y el logo, el nombre de la app, el nombre del propietario
+y el carro.
+
 ## Limitaciones conocidas (Android 8.1)
 
 - La pantalla dividida y los botones flotantes dependen del permiso de accesibilidad; si se fuerza
