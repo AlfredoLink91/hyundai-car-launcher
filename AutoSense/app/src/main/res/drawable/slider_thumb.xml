@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Perilla del deslizador: círculo blanco con borde azul suave -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="#FFFFFF" />
+    <stroke android:width="2dp" android:color="#664DA3FF" />
+    <size android:width="22dp" android:height="22dp" />
+</shape>

@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tablero de conducción: va en pantalla dividida junto a Waze o Maps.
+     Auto mirando hacia adelante sobre una carretera animada, velocímetro grande al centro,
+     brillo y volumen verticales a los lados. DockActivity ajusta tamaños según el ancho. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dock_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- Logo, saludo, hora | clima, Bluetooth, Wi-Fi, batería, apagar -->
+    <LinearLayout
+        android:id="@+id/dock_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/dock_logo"
+                android:layout_width="140dp"
+                android:layout_height="18dp"
+                android:contentDescription="Hyundai"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_hyundai_logo" />
+
+            <TextView
+                android:id="@+id/greeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#B0C4DE"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/weather_icon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:contentDescription="Clima"
+            android:src="@drawable/ic_wx_partly" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--°C"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/weather_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="240dp"
+                android:textColor="#B0C4DE"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/dock_divider"
+            android:layout_width="1dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#33FFFFFF" />
+
+        <ImageView
+            android:id="@+id/bt_status"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:contentDescription="Bluetooth"
+            android:src="@drawable/ic_bluetooth" />
+
+        <com.autosense.launcher.WifiSignalView
+            android:id="@+id/wifi_signal"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="Wi-Fi" />
+
+        <com.autosense.launcher.BatteryView
+            android:id="@+id/battery"
+            android:layout_width="30dp"
+            android:layout_height="16dp"
+            android:contentDescription="Batería" />
+
+        <TextView
+            android:id="@+id/battery_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="--%"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/power_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="6dp"
+            android:contentDescription="Apagar"
+            android:scaleType="center"
+            android:src="@drawable/ic_power" />
+    </LinearLayout>
+
+    <!-- Brillo | auto sobre la carretera + velocímetro | volumen | música -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <!-- Brillo vertical -->
+        <LinearLayout
+            android:id="@+id/brightness_column"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/glass_panel"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_brightness" />
+
+            <com.autosense.launcher.VerticalSeekBar
+                android:id="@+id/brightness_slider"
+                style="@style/VerticalSlider"
+                android:contentDescription="Brillo de la pantalla" />
+        </LinearLayout>
+
+        <!-- Centro: auto + carretera arriba, velocímetro grande abajo -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/drive_stage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.85">
+
+                <com.autosense.launcher.RoadView
+                    android:id="@+id/road"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0" />
+
+                <ImageView
+                    android:id="@+id/car"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="14dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Hyundai Accent 2017 rojo"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/car_accent" />
+            </FrameLayout>
+
+            <com.autosense.launcher.SpeedGaugeView
+                android:id="@+id/speed_gauge"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.15" />
+        </LinearLayout>
+
+        <!-- Volumen vertical -->
+        <LinearLayout
+            android:id="@+id/volume_column"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/glass_panel"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_volume" />
+
+            <com.autosense.launcher.VerticalSeekBar
+                android:id="@+id/volume_slider"
+                style="@style/VerticalSlider"
+                android:contentDescription="Volumen" />
+        </LinearLayout>
+
+        <!-- Música -->
+        <LinearLayout
+            android:id="@+id/music_card"
+            android:layout_width="190dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/glass_panel"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/music_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Música"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/album_art"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:contentDescription="Portada"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_music" />
+
+            <!-- Letra estilo karaoke (si la canción la tiene); si no, la portada ocupa el espacio -->
+            <com.autosense.launcher.LyricsView
+                android:id="@+id/lyrics"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1.3"
+                android:contentDescription="Letra de la canción"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/track_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Spotify"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/track_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Toca para abrir"
+                android:textColor="#B0C4DE"
+                android:textSize="12sp" />
+
+            <!-- Progreso de la canción: arrastrar para adelantar o retroceder -->
+            <SeekBar
+                android:id="@+id/track_seek"
+                style="@style/QuickSlider"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:layout_weight="0"
+                android:layout_marginTop="2dp"
+                android:contentDescription="Posición de la canción" />
+
+            <LinearLayout
+                android:id="@+id/track_times"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp">
+
+                <TextView
+                    android:id="@+id/track_elapsed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0:00"
+                    android:textColor="#B0C4DE"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/track_remaining"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-0:00"
+                    android:textColor="#B0C4DE"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/music_prev"
+                    style="@style/MediaButton"
+                    android:contentDescription="Canción anterior"
+                    android:src="@drawable/ic_skip_prev" />
+
+                <ImageView
+                    android:id="@+id/music_play"
+                    style="@style/MediaButton"
+                    android:contentDescription="Reproducir o pausar"
+                    android:src="@drawable/ic_play_pause" />
+
+                <ImageView
+                    android:id="@+id/music_next"
+                    style="@style/MediaButton"
+                    android:contentDescription="Siguiente canción"
+                    android:src="@drawable/ic_skip_next" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Barra inferior -->
+    <LinearLayout
+        android:id="@+id/dock_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/nav_bar_bg"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tab_home"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_home"
+            android:text="Home" />
+
+        <TextView
+            android:id="@+id/tab_mapa"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_map"
+            android:text="Mapa" />
+
+        <TextView
+            android:id="@+id/tab_musica"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_music"
+            android:text="Música" />
+
+        <TextView
+            android:id="@+id/tab_telefono"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_phone"
+            android:text="Teléfono" />
+
+        <TextView
+            android:id="@+id/tab_camara"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_camera"
+            android:text="Cámara" />
+
+        <TextView
+            android:id="@+id/tab_ajustes"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_settings"
+            android:text="Ajustes" />
+
+        <TextView
+            android:id="@+id/tab_apps"
+            style="@style/NavTab"
+            android:drawableTop="@drawable/ic_apps"
+            android:text="Apps" />
+    </LinearLayout>
+</LinearLayout>

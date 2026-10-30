@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vidrio oscuro para las ventanas flotantes: se lee bien sobre el mapa claro de Waze -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="90"
+        android:startColor="#EB142233"
+        android:endColor="#F2060C16"
+        android:type="linear" />
+    <corners android:radius="22dp" />
+    <stroke
+        android:width="1dp"
+        android:color="#664DA3FF" />
+</shape>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AutoSense" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:statusBarColor">#02070E</item>
+        <item name="android:navigationBarColor">#02070E</item>
+    </style>
+
+    <style name="NavTab">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+    <style name="MediaButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+    <style name="QuickSlider">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:maxHeight">6dp</item>
+        <item name="android:minHeight">6dp</item>
+        <item name="android:progressDrawable">@drawable/slider_track</item>
+        <item name="android:thumb">@drawable/slider_thumb</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!-- Deslizador vertical del modo conducción (brillo y volumen a los lados) -->
+    <style name="VerticalSlider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:maxHeight">6dp</item>
+        <item name="android:minHeight">6dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:progressDrawable">@drawable/slider_track</item>
+        <item name="android:thumb">@drawable/slider_thumb</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!-- Botón del dock flotante: ancho fijo para que el dock mida lo justo -->
+    <style name="DockTab" parent="NavTab">
+        <item name="android:layout_width">78dp</item>
+        <item name="android:layout_weight">0</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Brillo azul detrás del auto, como en la referencia -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="radial"
+        android:gradientRadius="50%p"
+        android:startColor="#553A8BFF"
+        android:endColor="#00000000" />
+</shape>

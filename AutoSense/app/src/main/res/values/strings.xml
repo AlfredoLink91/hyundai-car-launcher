@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="split_service_label">Hyundai · Pantalla dividida</string>
+    <string name="split_service_description">Permite que Hyundai ponga Waze o Google Maps y el tablero lado a lado, y mantiene visibles los botones atrás, inicio y recientes fuera de la pantalla de inicio. Solo detecta qué app está al frente; no lee el contenido de la pantalla.</string>
+</resources>

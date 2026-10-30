@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pista del deslizador: fondo translúcido y relleno azul con extremos redondos -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background" android:gravity="center_vertical|fill_horizontal" android:height="6dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#33FFFFFF" />
+            <corners android:radius="3dp" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress" android:gravity="center_vertical|fill_horizontal" android:height="6dp">
+        <scale android:scaleWidth="100%">
+            <shape android:shape="rectangle">
+                <gradient android:startColor="#2F7BDB" android:endColor="#6FB8FF" />
+                <corners android:radius="3dp" />
+            </shape>
+        </scale>
+    </item>
+</layer-list>

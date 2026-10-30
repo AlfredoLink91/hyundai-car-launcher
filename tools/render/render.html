@@ -1,0 +1,381 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Render 360</title>
+<style>body { margin: 0; background: #223; } canvas { display: block; }</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+</head>
+<body>
+<script type="module">
+// Fotografía el modelo 3D desde N ángulos con fondo transparente, luces de estudio y reflejos.
+import * as THREE from 'three';
+import { GLTFLoader } from './vendor/loaders/GLTFLoader.js';
+import { RoomEnvironment } from './vendor/environments/RoomEnvironment.js';
+
+const q = new URLSearchParams(location.search);
+const MODEL = q.get('model') || 'ToyCar.glb';
+const FRAMES = +(q.get('frames') || 24);
+const W = +(q.get('w') || 900), H = +(q.get('h') || 500);
+const START = +(q.get('start') || 0) * Math.PI / 180;   // giro inicial para que el frente quede de 3/4
+const ELEV = +(q.get('elev') || 0.32);                   // altura de la cámara
+const PAINT = q.get('paint');                            // color de carrocería opcional, ej. c8102e
+const PAINT_MATCH = new RegExp(q.get('paintMatch') || 'paint|body|carroc|exterior', 'i');
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.setClearColor(0x000000, 0);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(3, 6, 4);
+scene.add(sun);
+
+const camera = new THREE.PerspectiveCamera(28, W / H, 0.01, 100);
+
+const gltf = await new GLTFLoader().loadAsync('/models/' + MODEL);
+const model = gltf.scene;
+if (PAINT) {
+  model.traverse(o => {
+    if (o.isMesh && o.material && PAINT_MATCH.test(o.material.name || o.name)) {
+      o.material = o.material.clone();
+      o.material.color = new THREE.Color('#' + PAINT);
+      // Pintura de auto: brillante, con algo de reflejo metálico
+      o.material.metalness = +(q.get('metal') || 0.35);
+      o.material.roughness = +(q.get('rough') || 0.22);
+      o.material.map = null;
+    }
+  });
+}
+// Centrar y escalar el modelo a un tamaño fijo, girando sobre su propio centro
+const box = new THREE.Box3().setFromObject(model);
+const size = box.getSize(new THREE.Vector3());
+const center = box.getCenter(new THREE.Vector3());
+model.position.sub(center);
+const pivot = new THREE.Group();
+pivot.add(model);
+pivot.scale.setScalar(4 / Math.max(size.x, size.y, size.z));
+scene.add(pivot);
+
+// ---- Escudo de El Salvador (dibujo vectorial detallado) ----
+// Triángulo dorado con cielo, arcoíris, gorro frigio con rayos, 5 volcanes y mar;
+// banderas azul-blanco-azul a cada lado, corona de laurel, listón "DIOS UNION LIBERTAD"
+// y la leyenda circular "REPUBLICA DE EL SALVADOR EN LA AMERICA CENTRAL".
+function drawCoatOfArms(g, cx, cy, s) {
+  g.save(); g.translate(cx, cy); g.scale(s, s);
+  const R = 86;
+  // Fondo y leyenda circular
+  g.beginPath(); g.arc(0, 0, R, 0, Math.PI * 2); g.fillStyle = '#f4f6fa'; g.fill();
+  g.fillStyle = '#b8902a'; g.font = 'bold 13px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const legend = 'REPUBLICA DE EL SALVADOR EN LA AMERICA CENTRAL';
+  const arc = Math.PI * 1.55, start = -Math.PI / 2 - arc / 2;
+  [...legend].forEach((ch, i) => {
+    const a = start + arc * i / (legend.length - 1);
+    g.save(); g.rotate(a + Math.PI / 2); g.fillText(ch, 0, -R + 9); g.restore();
+  });
+  // Corona de laurel (rasgo propio del escudo salvadoreño): dos ramas gruesas que rodean todo
+  for (const side of [-1, 1]) {
+    for (let k = 0; k < 16; k++) {
+      const a = Math.PI / 2 + side * (0.18 + k * 0.155);
+      for (const r of [58, 66]) {
+        const x = Math.cos(a) * r, y = Math.sin(a) * r;
+        g.save(); g.translate(x, y); g.rotate(a + side * (r === 58 ? 1.1 : 0.6));
+        g.fillStyle = r === 58 ? '#2f7d3a' : '#3f9a4a';
+        g.beginPath(); g.ellipse(0, 0, 8, 3.4, 0, 0, Math.PI * 2); g.fill();
+        g.restore();
+      }
+    }
+  }
+  // Cinco banderas azul-blanco-azul a cada lado, grandes y en abanico detrás del triángulo
+  for (const side of [-1, 1]) {
+    for (let k = 0; k < 5; k++) {
+      g.save();
+      g.rotate(side * (0.30 + k * 0.24));
+      g.fillStyle = '#6b5420'; g.fillRect(-1.4, -64, 2.8, 64);           // asta
+      g.fillStyle = '#b8902a'; g.beginPath(); g.arc(0, -65, 2.6, 0, Math.PI * 2); g.fill();  // punta
+      g.translate(side * 1.4, -62);
+      const w = 26 * side, hgt = 21;
+      // Bandera con ondulado leve
+      for (const [y0, col] of [[0, '#1d4fb8'], [hgt / 3, '#ffffff'], [2 * hgt / 3, '#1d4fb8']]) {
+        g.fillStyle = col;
+        g.beginPath(); g.moveTo(0, y0);
+        g.quadraticCurveTo(w / 2, y0 - 3, w, y0 + 1);
+        g.lineTo(w, y0 + hgt / 3 + 1);
+        g.quadraticCurveTo(w / 2, y0 + hgt / 3 - 3, 0, y0 + hgt / 3);
+        g.closePath(); g.fill();
+      }
+      g.strokeStyle = '#0d2f75'; g.lineWidth = 0.6;
+      g.strokeRect(0, 0, w, hgt);
+      g.restore();
+    }
+  }
+  // Triángulo
+  const T = [[0, -42], [40, 26], [-40, 26]];
+  g.save();
+  g.beginPath(); g.moveTo(...T[0]); g.lineTo(...T[1]); g.lineTo(...T[2]); g.closePath(); g.clip();
+  g.fillStyle = '#7fb3ff'; g.fillRect(-45, -45, 90, 75);                 // cielo
+  // Arcoíris
+  ['#d83b3b', '#f0a43a', '#f3e04a', '#4caf50', '#3b6fd8', '#7a4fc8'].forEach((c, i) => {
+    g.beginPath(); g.arc(0, 4, 30 - i * 2.4, Math.PI, 0); g.strokeStyle = c; g.lineWidth = 2.4; g.stroke();
+  });
+  // Rayos y gorro frigio sobre su asta
+  g.strokeStyle = '#f2c94c'; g.lineWidth = 1.2;
+  for (let k = 0; k < 14; k++) {
+    const a = Math.PI + k * Math.PI / 13;
+    g.beginPath(); g.moveTo(Math.cos(a) * 8, -12 + Math.sin(a) * 8); g.lineTo(Math.cos(a) * 18, -12 + Math.sin(a) * 18); g.stroke();
+  }
+  g.fillStyle = '#5c4a1f'; g.fillRect(-0.8, -14, 1.6, 22);
+  g.fillStyle = '#c62828'; g.beginPath(); g.moveTo(-6, -10); g.quadraticCurveTo(-2, -24, 7, -18); g.lineTo(5, -10); g.closePath(); g.fill();
+  // Cinco volcanes
+  g.fillStyle = '#2f7d3a';
+  for (let k = 0; k < 5; k++) {
+    const x = -32 + k * 16;
+    g.beginPath(); g.moveTo(x - 10, 18); g.lineTo(x, 6); g.lineTo(x + 10, 18); g.closePath(); g.fill();
+  }
+  // Mar
+  g.fillStyle = '#1d4fb8'; g.fillRect(-45, 17, 90, 12);
+  g.strokeStyle = '#ffffff'; g.lineWidth = 1;
+  for (let k = -3; k <= 3; k++) { g.beginPath(); g.arc(k * 11, 21, 4, Math.PI, 0); g.stroke(); }
+  g.restore();
+  // Borde dorado del triángulo y fecha
+  g.beginPath(); g.moveTo(...T[0]); g.lineTo(...T[1]); g.lineTo(...T[2]); g.closePath();
+  g.strokeStyle = '#b8902a'; g.lineWidth = 3.5; g.stroke();
+  g.fillStyle = '#b8902a'; g.font = 'bold 6px Arial'; g.fillText('15 DE SEPTIEMBRE DE 1821', 0, -2);
+  // Listón inferior
+  g.fillStyle = '#ffffff'; g.strokeStyle = '#b8902a'; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(-46, 34); g.quadraticCurveTo(0, 48, 46, 34); g.lineTo(46, 46); g.quadraticCurveTo(0, 60, -46, 46); g.closePath();
+  g.fill(); g.stroke();
+  g.fillStyle = '#1d4fb8'; g.font = 'bold 9px Arial'; g.fillText('DIOS UNION LIBERTAD', 0, 46);
+  g.restore();
+}
+
+// ---- Placa de El Salvador (formato 2011) dibujada a mano ----
+const PLATE = q.get('plate');            // ej. "P 423 B5" -> letra, grupo antes del escudo, grupo después
+// Diseño según placa real (formato 2011): franja blanca ondulada en diagonal sobre azul,
+// caracteres altos y delgados en relieve, "EL SALVADOR" arriba, "2011" y "TRASERA/DELANTERA",
+// escudo con código de barras entre grupos, "CENTRO AMERICA" abajo, ranuras de tornillos.
+// Devuelve color, relieve (bump) y máscara de esquinas redondeadas.
+function plateTextures(text, label) {
+  const letter = text[0], serial = text.slice(1);
+  const left = serial.slice(0, -3), right = serial.slice(-3);
+  const W = 1200, H = 600;
+  const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return [c, c.getContext('2d')]; };
+  const [c, g] = mk();           // color
+  const [cb, b] = mk();          // relieve: gris medio = plano, blanco = en relieve
+  const [ca, a] = mk();          // máscara
+
+  // Fondo azul de la bandera con la franja blanca ondulada bajando de izquierda a derecha
+  const blue = g.createLinearGradient(0, 0, W, H);
+  blue.addColorStop(0, '#2f63c4'); blue.addColorStop(0.5, '#5b8fdc'); blue.addColorStop(1, '#2a5ab8');
+  g.fillStyle = blue; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#f7f8fa';
+  g.beginPath();
+  g.moveTo(0, 150); g.bezierCurveTo(300, 90, 600, 260, 900, 250); g.bezierCurveTo(1050, 245, 1150, 290, W, 330);
+  g.lineTo(W, 500); g.bezierCurveTo(1000, 470, 750, 520, 500, 420); g.bezierCurveTo(300, 345, 120, 400, 0, 380);
+  g.closePath(); g.fill();
+  // Brillo suave de la lámina reflejante
+  const sheen = g.createLinearGradient(0, 0, 0, H);
+  sheen.addColorStop(0, 'rgba(255,255,255,0.18)'); sheen.addColorStop(0.5, 'rgba(255,255,255,0)'); sheen.addColorStop(1, 'rgba(0,0,0,0.08)');
+  g.fillStyle = sheen; g.fillRect(0, 0, W, H);
+
+  b.fillStyle = '#808080'; b.fillRect(0, 0, W, H);
+
+  // Texto impreso (plano)
+  const flat = (t, x, y, px, sx, align = 'center', weight = 'bold') => {
+    g.save(); g.translate(x, y); g.scale(sx, 1);
+    g.font = `${weight} ${px}px Arial, sans-serif`; g.textAlign = align; g.textBaseline = 'middle';
+    g.fillStyle = '#121212'; g.fillText(t, 0, 0); g.restore();
+  };
+  flat('EL SALVADOR', 600, 78, 108, 0.74);
+  flat('2011', 1120, 74, 48, 0.8);
+  flat(label, 112, 46, 30, 0.8);
+  flat('CENTRO AMERICA', 600, 540, 70, 0.74);
+
+  // Caracteres grandes en relieve: sombra, cuerpo y filo iluminado
+  const embossed = (t, x, align) => {
+    const draw = (ctx, fill, dx, dy) => {
+      ctx.save(); ctx.translate(x + dx, 320 + dy); ctx.scale(0.56, 1);
+      ctx.font = '500 330px Arial, sans-serif'; ctx.textAlign = align; ctx.textBaseline = 'middle';
+      ctx.fillStyle = fill; ctx.fillText(t, 0, 0); ctx.restore();
+    };
+    draw(g, 'rgba(0,0,0,0.32)', 5, 6);
+    draw(g, 'rgba(255,255,255,0.55)', -3, -3);
+    draw(g, '#141414', 0, 0);
+    b.filter = 'blur(3px)'; draw(b, '#ffffff', 0, 0); b.filter = 'none';
+  };
+  embossed(letter, 52, 'left');
+  embossed(left, 520, 'right');
+  embossed(right, 735, 'left');
+
+  // Escudo y código de barras con el número impreso, entre los dos grupos
+  drawCoatOfArms(g, 640, 305, 0.62);
+  g.fillStyle = '#111';
+  for (let i = 0, x = 556; x < 604; i++) { const w = (i * 7 % 3) + 1.5; g.fillRect(x, 368, w, 30); x += w + 2; }
+  g.font = 'bold 13px Arial'; g.textAlign = 'center'; g.fillText(text, 580, 409);
+
+  // Ranuras de los tornillos (hundidas)
+  for (const [x, y] of [[270, 132], [1000, 132], [270, 470], [1000, 470]]) {
+    g.fillStyle = '#1b1f26'; g.beginPath(); g.ellipse(x, y, 30, 11, 0, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.45)'; g.lineWidth = 2; g.beginPath(); g.ellipse(x, y + 2, 30, 11, 0, 0.2, Math.PI - 0.2); g.stroke();
+    b.fillStyle = '#303030'; b.beginPath(); b.ellipse(x, y, 30, 11, 0, 0, Math.PI * 2); b.fill();
+  }
+  // Borde estampado en relieve alrededor de la placa
+  b.filter = 'blur(2px)'; b.strokeStyle = '#ffffff'; b.lineWidth = 10;
+  b.beginPath(); b.roundRect(14, 14, W - 28, H - 28, 34); b.stroke(); b.filter = 'none';
+  g.strokeStyle = 'rgba(255,255,255,0.5)'; g.lineWidth = 4; g.beginPath(); g.roundRect(12, 12, W - 24, H - 24, 34); g.stroke();
+  g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = 4; g.beginPath(); g.roundRect(18, 18, W - 36, H - 36, 32); g.stroke();
+  // Desgaste leve (motas) para que no se vea perfecto
+  for (let i = 0; i < 900; i++) {
+    g.fillStyle = `rgba(${Math.random() < 0.5 ? '0,0,0' : '255,255,255'},${Math.random() * 0.06})`;
+    g.fillRect(Math.random() * W, Math.random() * H, 2 + Math.random() * 4, 2 + Math.random() * 4);
+  }
+  // Máscara de esquinas redondeadas
+  a.fillStyle = '#000'; a.fillRect(0, 0, W, H);
+  a.fillStyle = '#fff'; a.beginPath(); a.roundRect(2, 2, W - 4, H - 4, 40); a.fill();
+
+  if (label === 'TRASERA') window.plateCanvas = c;
+  const tex = (cv, srgb) => {
+    const t = new THREE.CanvasTexture(cv);
+    if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  };
+  return { map: tex(c, true), bump: tex(cb, false), alpha: tex(ca, false) };
+}
+function plateMaterial(text, label) {
+  const t = plateTextures(text, label);
+  return new THREE.MeshStandardMaterial({
+    map: t.map, bumpMap: t.bump, bumpScale: 2.5, alphaMap: t.alpha, transparent: true, alphaTest: 0.5,
+    roughness: 0.55, metalness: 0.1, envMapIntensity: 0.45, color: 0xc9cdd4
+  });
+}
+if (PLATE) {
+  scene.updateMatrixWorld(true);
+  const wb = new THREE.Box3().setFromObject(model);
+  const h = wb.max.y - wb.min.y;
+  const ray = new THREE.Raycaster();
+  // Placa real: 30 x 15 cm. El modelo viene en metros.
+  const geo = new THREE.PlaneGeometry(0.30, 0.15);
+  // Sombra de contacto: una mancha oscura difusa detrás de la placa, contra la carrocería
+  const shadowCanvas = document.createElement('canvas'); shadowCanvas.width = 256; shadowCanvas.height = 128;
+  const sg = shadowCanvas.getContext('2d');
+  const rad = sg.createRadialGradient(128, 64, 10, 128, 64, 120);
+  rad.addColorStop(0, 'rgba(0,0,0,0.75)'); rad.addColorStop(0.6, 'rgba(0,0,0,0.45)'); rad.addColorStop(1, 'rgba(0,0,0,0)');
+  sg.fillStyle = rad; sg.fillRect(0, 0, 256, 128);
+  const shadowMat = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shadowCanvas), transparent: true, depthWrite: false });
+  const shadowGeo = new THREE.PlaneGeometry(0.36, 0.20);
+  const place = (heightFrac, dir) => {
+    const mat = plateMaterial(PLATE.replace(/\s+/g, ''), dir > 0 ? 'TRASERA' : 'DELANTERA');
+    const y = wb.min.y + h * heightFrac;
+    const from = new THREE.Vector3(0, y, dir * 10);
+    ray.set(from, new THREE.Vector3(0, 0, -dir));
+    const hit = ray.intersectObject(model, true)[0];
+    if (!hit) return;
+    const plate = new THREE.Mesh(geo, mat);
+    plate.position.copy(hit.point).add(new THREE.Vector3(0, 0, dir * +(q.get('gap') || 0.02)));
+    if (dir < 0) plate.rotation.y = Math.PI;
+    // Inclinación leve según la superficie
+    const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+    plate.rotation.x = -Math.atan2(n.y, Math.abs(n.z)) * 0.8;
+    // Sombra justo detrás de la placa, pegada a la carrocería
+    const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+    shadow.position.copy(hit.point).add(new THREE.Vector3(0, -0.01, dir * 0.004));
+    shadow.rotation.copy(plate.rotation);
+    // Se agregan al modelo para que giren junto con él
+    model.worldToLocal(plate.position);
+    model.worldToLocal(shadow.position);
+    model.add(shadow);
+    model.add(plate);
+  };
+  place(+(q.get('rearH') || 0.40), +1);   // atrás (+z en este modelo)
+  place(+(q.get('frontH') || 0.26), -1);  // adelante
+}
+
+// ---- Llantas que giran (modo conducción) ----
+// spin=N: en lugar de girar el auto, lo deja fijo en el ángulo START y hace N cuadros
+// con las llantas girando un tramo de su patrón de rines (lazo continuo).
+const SPIN = +(q.get('spin') || 0);
+const SPIN_STEP = +(q.get('spinStep') || 72) * Math.PI / 180;   // simetría del rin (5 rayos = 72°)
+const wheels = [];
+if (SPIN) {
+  model.updateMatrixWorld(true);
+  model.traverse(o => { if (/^Circle\.?\d+$/.test(o.name)) wheels.push(o); });
+  for (const w of wheels) {
+    // Centro de la llanta en sus propias coordenadas: el eje es el lado más delgado
+    const box = new THREE.Box3();
+    w.children.forEach(ch => { if (ch.geometry) { ch.geometry.computeBoundingBox(); box.union(ch.geometry.boundingBox.clone().applyMatrix4(ch.matrix)); } });
+    const c = box.getCenter(new THREE.Vector3());
+    const s = box.getSize(new THREE.Vector3());
+    const axis = s.x < s.y && s.x < s.z ? 'x' : (s.y < s.z ? 'y' : 'z');
+    const hub = new THREE.Group();
+    hub.position.copy(c);
+    [...w.children].forEach(ch => { w.remove(ch); ch.position.sub(c); hub.add(ch); });
+    w.add(hub);
+    w.userData.hub = hub; w.userData.axis = axis;
+  }
+  console.log('WHEELS', wheels.length, wheels.map(w => w.userData.axis).join(','));
+  window._dbg = { wheels, camera, pivot, THREE };
+}
+
+camera.position.set(0, 4 * ELEV + 0.4, 8.2);
+camera.lookAt(0, 0, 0);
+
+// 1) Renderizar todos los ángulos y guardar una copia de cada uno
+const shots = [];
+for (let i = 0; i < FRAMES; i++) {
+  if (SPIN) {
+    pivot.rotation.y = START;
+    for (const w of wheels) w.userData.hub.rotation[w.userData.axis] = -i * SPIN_STEP / FRAMES;
+  } else {
+    pivot.rotation.y = START + i * 2 * Math.PI / FRAMES;
+  }
+  renderer.render(scene, camera);
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  c.getContext('2d').drawImage(renderer.domElement, 0, 0);
+  shots.push(c);
+}
+// 2) Recuadro común que contiene al auto en todos los ángulos (sin márgenes vacíos)
+let x0 = W, y0 = H, x1 = 0, y1 = 0;
+for (const c of shots) {
+  const px = c.getContext('2d').getImageData(0, 0, W, H).data;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (px[(y * W + x) * 4 + 3] > 8) {
+      if (x < x0) x0 = x; if (x > x1) x1 = x;
+      if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+  }
+}
+const pad = 6;
+x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad);
+x1 = Math.min(W - 1, x1 + pad); y1 = Math.min(H - 1, y1 + pad);
+// crop=x0,y0,x1,y1 reutiliza el recuadro de otro render (p. ej. el del giro 360°) para que encajen
+if (q.get('crop')) [x0, y0, x1, y1] = q.get('crop').split(',').map(Number);
+console.log('CROP', [x0, y0, x1, y1].join(','));
+// 3) Recortar, reducir al ancho final y enviar
+const OUT_W = +(q.get('outw') || 640);
+const scale = Math.min(1, OUT_W / (x1 - x0 + 1));
+const ow = Math.round((x1 - x0 + 1) * scale), oh = Math.round((y1 - y0 + 1) * scale);
+await fetch('/clear', { method: 'POST' });
+for (let i = 0; i < FRAMES; i++) {
+  const out = document.createElement('canvas');
+  out.width = ow; out.height = oh;
+  const g = out.getContext('2d');
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(shots[i], x0, y0, x1 - x0 + 1, y1 - y0 + 1, 0, 0, ow, oh);
+  await fetch('/frame?i=' + i, { method: 'POST', body: out.toDataURL('image/png') });
+}
+if (q.get('dumpPlate') && window.plateCanvas) {
+  await fetch('/frame?i=plate', { method: 'POST', body: window.plateCanvas.toDataURL('image/png') });
+}
+document.title = 'DONE ' + FRAMES + ' ' + ow + 'x' + oh;
+</script>
+</body>
+</html>

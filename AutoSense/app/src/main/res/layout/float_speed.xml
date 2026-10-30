@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ventana flotante: velocímetro -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/float_bg"
+    android:padding="10dp">
+
+    <com.autosense.launcher.SpeedGaugeView
+        android:id="@+id/speed_gauge"
+        android:layout_width="160dp"
+        android:layout_height="160dp" />
+</FrameLayout>

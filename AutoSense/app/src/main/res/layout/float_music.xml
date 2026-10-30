@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ventana flotante: mini reproductor -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/float_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/album_art"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:contentDescription="Portada"
+        android:padding="14dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_music" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/track_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Spotify"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/track_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Toca para abrir"
+            android:textColor="#B0C4DE"
+            android:textSize="13sp" />
+
+        <!-- Progreso de la canción: arrastrar para adelantar o retroceder -->
+        <SeekBar
+            android:id="@+id/track_seek"
+            style="@style/QuickSlider"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_weight="0"
+            android:layout_marginTop="4dp"
+            android:contentDescription="Posición de la canción" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/track_elapsed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0:00"
+                android:textColor="#B0C4DE"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/track_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-0:00"
+                android:textColor="#B0C4DE"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/music_prev"
+                style="@style/MediaButton"
+                android:contentDescription="Canción anterior"
+                android:src="@drawable/ic_skip_prev" />
+
+            <ImageView
+                android:id="@+id/music_play"
+                style="@style/MediaButton"
+                android:contentDescription="Reproducir o pausar"
+                android:src="@drawable/ic_play_pause" />
+
+            <ImageView
+                android:id="@+id/music_next"
+                style="@style/MediaButton"
+                android:contentDescription="Siguiente canción"
+                android:src="@drawable/ic_skip_next" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,24 @@
+# Android Studio / Gradle
+.gradle/
+build/
+.idea/
+*.iml
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Firmas y archivos generados
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Render: librerías descargadas y modelo 3D (se descarga de Sketchfab)
+tools/render/vendor/
+tools/render/models/
+tools/render/frames/
+
+# Sistema
+.DS_Store
+Thumbs.db

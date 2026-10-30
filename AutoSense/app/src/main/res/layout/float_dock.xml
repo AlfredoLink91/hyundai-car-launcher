@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ventana flotante: dock con los botones principales -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="78dp"
+    android:background="@drawable/float_bg"
+    android:orientation="horizontal"
+    android:paddingStart="6dp"
+    android:paddingEnd="6dp">
+
+    <TextView
+        android:id="@+id/tab_home"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_home"
+        android:text="Home" />
+
+    <TextView
+        android:id="@+id/tab_mapa"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_map"
+        android:text="Mapa" />
+
+    <TextView
+        android:id="@+id/tab_musica"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_music"
+        android:text="Música" />
+
+    <TextView
+        android:id="@+id/tab_telefono"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_phone"
+        android:text="Teléfono" />
+
+    <TextView
+        android:id="@+id/tab_camara"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_camera"
+        android:text="Cámara" />
+
+    <TextView
+        android:id="@+id/tab_ajustes"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_settings"
+        android:text="Ajustes" />
+
+    <TextView
+        android:id="@+id/tab_apps"
+        style="@style/DockTab"
+        android:drawableTop="@drawable/ic_apps"
+        android:text="Apps" />
+</LinearLayout>
