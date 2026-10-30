@@ -8,6 +8,58 @@ y encendido/apagado automático con la corriente del carro.
 > Proyecto personal, sin fines comerciales y sin relación con Hyundai Motor Company.
 > "Hyundai" y su logo son marcas de su respectivo dueño.
 
+![Pantalla de inicio](docs/screenshots/01-inicio.png)
+
+## Capturas
+
+Todas tomadas en la tablet real (1280 × 800). En el modo manejo, el mapa de Waze está difuminado
+a propósito para no mostrar ubicaciones privadas.
+
+### Pantalla de inicio
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/01-inicio.png" alt="Pantalla de inicio"><br>
+<b>Inicio:</b> saludo según la hora, clima con sensación térmica, Bluetooth, Wi-Fi y batería,
+auto en 3D, brillo y volumen, velocímetro GPS y música con portada.</td>
+<td width="50%"><img src="docs/screenshots/02-auto-360.png" alt="Auto girado con el dedo"><br>
+<b>Auto 360°:</b> el Accent se gira con el dedo, con inercia, en 36 ángulos pre-renderizados.</td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/03-apps.png" alt="Cajón de aplicaciones"><br>
+<b>Apps:</b> solo las aplicaciones útiles en el carro, con el crédito del modelo 3D abajo.</td>
+<td><img src="docs/screenshots/04-menu-apagado.png" alt="Menú de apagado"><br>
+<b>Botón de encendido:</b> apagar pantalla, reiniciar o apagar la tablet.</td>
+</tr>
+</table>
+
+### Modo manejo (pantalla dividida con Waze)
+
+![Modo manejo](docs/screenshots/05-manejo.png)
+
+Waze en ⅓ de la pantalla y el tablero en el resto: el auto de 3/4 trasero sobre una carretera
+alineada con su dirección (las líneas avanzan y las llantas giran con la velocidad), velocímetro
+grande, brillo y volumen verticales y la letra de la canción estilo karaoke debajo de la portada.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/06-brillo-al-tocar.png" alt="Brillo encendido al tocarlo"><br>
+<b>Barras traslúcidas:</b> brillo y volumen casi transparentes; al tocarlas se ven normales
+(aquí el brillo) y al soltarlas vuelven a desvanecerse.</td>
+<td width="25%"><img src="docs/screenshots/07-manejo-mitad.png" alt="Tablero a la mitad"><br>
+<b>División a la mitad:</b> el diseño se reduce sin cortar nada.</td>
+<td width="25%"><img src="docs/screenshots/08-manejo-angosto.png" alt="Tablero angosto"><br>
+<b>División a ⅓:</b> lo esencial: saludo, iconos, velocímetro y controles.</td>
+</tr>
+</table>
+
+### Botones ◁ ○ ▢ flotantes
+
+![Botones flotantes apagados y encendidos](docs/screenshots/09-botones-flotantes.png)
+
+En cualquier app (aquí Configuración): casi transparentes mientras no se usan (izquierda); el primer
+toque los enciende (derecha) y se pueden arrastrar a donde no estorben.
+
 ## La tablet
 
 | | |
