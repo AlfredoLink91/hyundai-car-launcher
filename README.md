@@ -10,6 +10,18 @@ y encendido/apagado automático con la corriente del carro.
 
 ![Pantalla de inicio](docs/screenshots/01-inicio.png)
 
+### ☕ ¿Te sirvió? Apoya el proyecto
+
+Si este launcher te gustó o te ayudó a darle nueva vida a tu tablet, puedes invitarme un café.
+Las donaciones son en **dólares (USD)** por PayPal:
+
+[![Donar $3](https://img.shields.io/badge/☕_Un_café-$3_USD-0070ba?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/alfredolink91/3USD)
+[![Donar $5](https://img.shields.io/badge/🍔_Un_almuerzo-$5_USD-0070ba?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/alfredolink91/5USD)
+[![Donar $10](https://img.shields.io/badge/🚗_Gasolina-$10_USD-0070ba?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/alfredolink91/10USD)
+[![Otro monto](https://img.shields.io/badge/Otro_monto-PayPal-003087?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/alfredolink91)
+
+¡Gracias! 🙌
+
 ## Capturas
 
 Todas tomadas en la tablet real (1280 × 800). En el modo manejo, el mapa de Waze está difuminado
