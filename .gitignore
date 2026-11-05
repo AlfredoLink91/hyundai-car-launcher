@@ -25,3 +25,6 @@ Thumbs.db
 
 # Datos de la firma de publicación
 keystore.properties
+
+# Respaldo de instaladores y archivos de la tablet (no se publica)
+respaldo-tablet/
