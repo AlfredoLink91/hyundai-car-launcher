@@ -169,8 +169,13 @@ class Dashboard(
         bluetoothView?.let { view ->
             val adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter()
             val enabled = adapter?.isEnabled == true
-            val connected = enabled && listOf(android.bluetooth.BluetoothProfile.A2DP, android.bluetooth.BluetoothProfile.HEADSET)
-                .any { adapter?.getProfileConnectionState(it) == android.bluetooth.BluetoothProfile.STATE_CONNECTED }
+            // En Android 12 o superior esta consulta pide un permiso extra: sin él se muestra solo encendido/apagado
+            val connected = enabled && try {
+                listOf(android.bluetooth.BluetoothProfile.A2DP, android.bluetooth.BluetoothProfile.HEADSET)
+                    .any { adapter?.getProfileConnectionState(it) == android.bluetooth.BluetoothProfile.STATE_CONNECTED }
+            } catch (e: SecurityException) {
+                false
+            }
             // Azul: conectado a un equipo (carro, bocina) · blanco tenue: encendido · muy tenue: apagado
             view.setColorFilter(if (connected) 0xFF4DA3FF.toInt() else 0xFFFFFFFF.toInt())
             view.alpha = if (connected) 1f else if (enabled) 0.6f else 0.25f
@@ -210,7 +215,12 @@ class Dashboard(
     private val isDebugBuild = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     fun start() {
-        if (isDebugBuild) context.registerReceiver(debugSpeedReceiver, IntentFilter("com.autosense.launcher.DEBUG_SPEED"))
+        if (isDebugBuild) {
+            val filter = IntentFilter("com.autosense.launcher.DEBUG_SPEED")
+            // Android 13+ exige indicar si el aviso puede venir de fuera de la app (aquí, de ADB)
+            if (android.os.Build.VERSION.SDK_INT >= 33) context.registerReceiver(debugSpeedReceiver, filter, Context.RECEIVER_EXPORTED)
+            else context.registerReceiver(debugSpeedReceiver, filter)
+        }
         TAB_IDS.forEach { id -> root.findViewById<View>(id)?.setOnClickListener { onTab(id) } }
         root.findViewById<View>(R.id.nav_card)?.setOnClickListener { onTab(R.id.tab_mapa) }
         root.findViewById<View>(R.id.power_button)?.setOnClickListener { (context as? Activity)?.let { PowerMenu.show(it) } }

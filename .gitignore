@@ -22,3 +22,6 @@ tools/frames/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Datos de la firma de publicación
+keystore.properties
