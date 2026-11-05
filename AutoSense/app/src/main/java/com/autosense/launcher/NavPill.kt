@@ -51,7 +51,8 @@ class NavPill(private val service: AccessibilityService) {
         if (pkg == "com.android.systemui" || pkg == "android" || pkg.contains("inputmethod")) return
         if (pkg == service.packageName) {
             when {
-                className.endsWith(".MainActivity") -> hide()
+                // Inicio y Reloj y clima (pantalla inmersiva con su propio botón para volver)
+                className.endsWith(".MainActivity") || className.endsWith(".ClockWeatherActivity") -> hide()
                 className.endsWith(".DockActivity") -> show(split = true)
                 className.endsWith("Activity") -> show(split = SplitScreen.isActive)
                 // Diálogos y ventanas propias (menú de apagado, ventanas flotantes): no cambian nada

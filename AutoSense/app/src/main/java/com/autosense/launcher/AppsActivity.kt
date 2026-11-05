@@ -84,6 +84,21 @@ class AppsActivity : Activity() {
         }
         root.addView(grid, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
 
+        // Mostrar u ocultar el acceso a "Reloj y clima" en el inicio (se guarda en la tablet)
+        val clockWeather = ClockWeatherSettings(this)
+        root.addView(android.widget.Switch(this).apply {
+            text = "Mostrar el botón «Reloj y clima» en el inicio"
+            textSize = 16f
+            setTextColor(0xFFFFFFFF.toInt())
+            minHeight = dp(52)
+            setPadding(dp(16), 0, dp(16), 0)
+            setBackgroundResource(R.drawable.glass_panel)
+            isChecked = clockWeather.enabled
+            setOnCheckedChangeListener { _, on -> clockWeather.enabled = on }
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(8)
+        })
+
         // Crédito que pide la licencia CC BY 4.0 del modelo 3D del auto
         root.addView(TextView(this).apply {
             text = "Modelo 3D del auto: \"hyundai accent 2013\" por L95XP (sketchfab.com/I95XP), licencia CC BY 4.0. Color modificado."

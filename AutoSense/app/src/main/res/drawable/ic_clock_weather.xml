@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Botón "Reloj y clima" del inicio: reloj con un solecito -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="34dp"
+    android:height="34dp"
+    android:viewportWidth="34"
+    android:viewportHeight="34">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.2"
+        android:pathData="M15,4a11,11 0,1 1,0 22a11,11 0,1 1,0 -22z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="2.2"
+        android:pathData="M15,9.5v6l4,2.5" />
+    <path
+        android:fillColor="#FFFFC94A"
+        android:pathData="M26.5,20.5m-5.5,0a5.5,5.5 0,1 1,11 0a5.5,5.5 0,1 1,-11 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M21,30h12a3,3 0,0 0,0 -6a4.5,4.5 0,0 0,-8.6 -1.2a3.6,3.6 0,0 0,-3.4 7.2z" />
+</vector>

@@ -59,6 +59,15 @@
                 android:resource="@xml/split_screen_service" />
         </service>
 
+        <!-- Reloj y clima a pantalla completa (se abre desde el botón del inicio) -->
+        <activity
+            android:name=".ClockWeatherActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden"
+            android:exported="false"
+            android:label="Reloj y clima"
+            android:theme="@style/Theme.AutoSense.Opaque"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".AppsActivity"
             android:exported="false"

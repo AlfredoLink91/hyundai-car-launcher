@@ -170,6 +170,35 @@
                     android:contentDescription="Waze. Toca para abrir la navegación"
                     android:scaleType="fitCenter" />
 
+                <!-- Reloj y clima a pantalla completa (se puede ocultar desde sus ajustes o en Apps) -->
+                <LinearLayout
+                    android:id="@+id/clock_weather_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="52dp"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="96dp"
+                    android:background="@drawable/nav_banner"
+                    android:contentDescription="Abrir reloj y clima a pantalla completa"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="18dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_clock_weather" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Reloj y clima"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
                 <!-- Alternativa: modo manejo con Google Maps -->
                 <LinearLayout
                     android:id="@+id/nav_maps"

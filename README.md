@@ -72,6 +72,24 @@ grande, brillo y volumen verticales y la letra de la canción estilo karaoke deb
 En cualquier app (aquí Configuración): casi transparentes mientras no se usan (izquierda); el primer
 toque los enciende (derecha) y se pueden arrastrar a donde no estorben.
 
+### Reloj y clima (pantalla completa)
+
+![Reloj y clima en la tablet, con llovizna en San Salvador](docs/preview-reloj-clima/0-tablet-llovizna.png)
+
+La tablet se vuelve una estación meteorológica: reloj gigante, fecha, temperatura y sensación
+térmica reales, sobre un cielo animado que cambia con el clima y la hora del día.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/preview-reloj-clima/2-soleado.png" alt="Soleado"><br><b>Soleado:</b> sol con resplandor (aquí con segundos activados).</td>
+<td width="50%"><img src="docs/preview-reloj-clima/3-noche.png" alt="Noche"><br><b>Noche:</b> luna, estrellas que titilan y nubes oscuras.</td>
+</tr>
+<tr>
+<td><img src="docs/preview-reloj-clima/4-lluvia-tormenta-neblina.png" alt="Lluvia, tormenta y neblina"><br><b>Lluvia, tormenta y neblina:</b> lluvia que cae, gotas sobre el vidrio y relámpagos.</td>
+<td><img src="docs/preview-reloj-clima/5-ajustes.png" alt="Ajustes"><br><b>Ajustes:</b> ubicación (GPS o ciudad), 12/24 horas, segundos y botón en el inicio.</td>
+</tr>
+</table>
+
 ## La tablet
 
 | | |
@@ -115,6 +133,17 @@ y las animaciones están limitadas a ~30 cuadros por segundo para no calentar ni
 - Casi transparentes; el primer toque los enciende y se pueden arrastrar a cualquier lugar.
   Recuerdan su posición (una para pantalla completa y otra para la dividida).
 
+**Reloj y clima**
+- Se abre con el botón **Reloj y clima** del inicio (se puede ocultar desde sus ajustes o en **Apps**).
+- Reloj gigante con la hora de la tablet (12 o 24 horas, segundos opcionales) y fecha completa en español.
+- Temperatura, sensación térmica y estado del cielo reales (Open-Meteo), actualizados cada 5 minutos
+  mientras la pantalla está abierta; sin internet conserva el último dato y dice cuándo se actualizó.
+- Ubicación por GPS o eligiendo la ciudad; la primera vez la pregunta (no inventa una ciudad).
+- Cielo animado (sol, luna y estrellas, nubes, lluvia con gotas sobre el vidrio, tormenta, neblina,
+  nieve), paneles de vidrio que flotan con un reflejo de luz y números que ruedan al cambiar.
+- Todas las animaciones van a un solo ritmo (~15–25 cuadros/s, ~7 ms por cuadro en la tablet) y se
+  detienen al salir de la pantalla.
+
 **Integración con el carro**
 - Al dar corriente el carro: se enciende la pantalla, abre el inicio, prende el Bluetooth y
   reanuda la música donde se quedó.
@@ -133,6 +162,8 @@ AutoSense/            App del launcher (paquete com.autosense.launcher, nombre v
     Dashboard.kt          Lógica compartida: reloj, clima, música, GPS, sensores, pestañas
     SplitScreen.kt        Servicio de accesibilidad: pantalla dividida, botones flotantes
     NavPill.kt            Botones ◁ ○ ▢ flotantes y arrastrables
+    ClockWeatherActivity.kt  Pantalla "Reloj y clima" (ClockWeather.kt: ajustes, Open-Meteo y ciudades)
+    SkyView.kt            Cielo animado según el clima; WeatherIconView.kt y GlassPanelDrawable.kt
     CarPower.kt           Encendido/apagado con la corriente del carro, Bluetooth y música
     BootReceiver.kt       Al encender la tablet: pantalla encendida y directo al inicio
     CarTurntableView.kt   Auto 360° y llantas girando (cuadros en assets/)

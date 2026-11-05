@@ -39,6 +39,9 @@ class MainActivity : Activity() {
 
         dashboard = Dashboard(this, window.decorView) { tab -> openTab(tab) }
         dashboard.start()
+        findViewById<View>(R.id.clock_weather_button).setOnClickListener {
+            startActivity(Intent(this, ClockWeatherActivity::class.java))
+        }
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION)
@@ -65,6 +68,9 @@ class MainActivity : Activity() {
         }
         dashboard.selectTab(R.id.tab_home)
         dashboard.resume()
+        // Botón "Reloj y clima": visible solo si está activado (preferencia guardada en la tablet)
+        findViewById<View>(R.id.clock_weather_button).visibility =
+            if (ClockWeatherSettings(this).enabled) View.VISIBLE else View.GONE
         // El auto del Home siempre vuelve a su orientación original
         (findViewById<android.view.View>(R.id.car) as? CarTurntableView)?.resetOrientation()
     }

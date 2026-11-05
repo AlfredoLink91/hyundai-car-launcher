@@ -7,6 +7,12 @@
         <item name="android:navigationBarColor">#02070E</item>
     </style>
 
+    <!-- Reloj y clima: pantalla opaca (el fondo de pantalla del sistema no se dibuja detrás; ahorra GPU) -->
+    <style name="Theme.AutoSense.Opaque" parent="Theme.AutoSense">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+
     <style name="NavTab">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
