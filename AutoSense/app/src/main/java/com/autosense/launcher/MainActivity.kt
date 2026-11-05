@@ -84,6 +84,11 @@ class MainActivity : Activity() {
         }
     }
 
+    // Es la pantalla de inicio: "atrás" no la cierra (si se cerrara, quedaría al frente lo que hubiera
+    // debajo, como el launcher original de Lenovo, y la pantalla podría verse negra)
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() = Unit
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         dismissSwipeLock()
